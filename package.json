@@ -1,0 +1,44 @@
+{
+  "name": "ping-booster-worker",
+  "version": "1.0.0",
+  "description": "The most advanced ping booster Cloudflare Worker with WebSocket support, connection pooling, smart routing, and comprehensive optimization features",
+  "main": "worker.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "tail": "wrangler tail",
+    "test": "echo 'No tests configured yet'",
+    "format": "prettier --write '**/*.{js,json,md}'",
+    "lint": "eslint worker.js"
+  },
+  "keywords": [
+    "cloudflare",
+    "worker",
+    "ping",
+    "booster",
+    "latency",
+    "optimization",
+    "websocket",
+    "proxy",
+    "cdn",
+    "performance",
+    "edge-computing",
+    "connection-pooling",
+    "load-balancing",
+    "health-check",
+    "rate-limiting",
+    "caching"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0",
+    "prettier": "^3.0.0",
+    "eslint": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
