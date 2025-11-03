@@ -59,6 +59,8 @@ const CONFIG = {
 };
 
 // Connection pool management
+// Note: In Cloudflare Workers, connection pooling is handled automatically
+// by the runtime. This class tracks metrics and connection state.
 class ConnectionPool {
   constructor() {
     this.connections = new Map();
@@ -123,9 +125,11 @@ class RateLimiter {
 
   cleanup() {
     const now = Date.now();
+    const windowStart = now - CONFIG.rateLimit.windowMs;
+    
     for (const [clientId, requests] of this.requests.entries()) {
       const validRequests = requests.filter(
-        timestamp => timestamp > now - CONFIG.rateLimit.windowMs
+        timestamp => timestamp > windowStart
       );
       if (validRequests.length === 0) {
         this.requests.delete(clientId);
@@ -227,17 +231,9 @@ class RequestOptimizer {
   optimizeHeaders(headers) {
     const optimized = new Headers(headers);
     
-    // Remove unnecessary headers
-    optimized.delete('cookie');
-    optimized.delete('authorization');
-    
     // Add performance headers
     if (CONFIG.optimization.compression) {
       optimized.set('accept-encoding', 'gzip, deflate, br');
-    }
-    
-    if (CONFIG.optimization.http2) {
-      optimized.set('upgrade', 'h2');
     }
     
     // Add keep-alive
@@ -346,15 +342,6 @@ async function handleWebSocket(request) {
   // Accept the WebSocket connection
   server.accept();
 
-  // Set up keep-alive ping
-  const keepAliveInterval = setInterval(() => {
-    try {
-      server.send(JSON.stringify({ type: 'ping', timestamp: Date.now() }));
-    } catch (error) {
-      clearInterval(keepAliveInterval);
-    }
-  }, CONFIG.websocket.keepAliveInterval);
-
   // Handle messages
   server.addEventListener('message', async (event) => {
     try {
@@ -380,7 +367,7 @@ async function handleWebSocket(request) {
   });
 
   server.addEventListener('close', () => {
-    clearInterval(keepAliveInterval);
+    // Connection closed, cleanup if needed
   });
 
   return new Response(null, {

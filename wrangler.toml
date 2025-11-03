@@ -9,7 +9,7 @@ zone_id = ""
 
 # Resource limits
 [limits]
-cpu_ms = 50
+cpu_ms = 200
 
 # Environment variables
 [vars]
