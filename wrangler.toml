@@ -1,0 +1,68 @@
+name = "ping-booster-worker"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# Worker configuration
+workers_dev = true
+route = ""
+zone_id = ""
+
+# Resource limits
+[limits]
+cpu_ms = 200
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+
+# Cron triggers for health checks
+[triggers]
+crons = ["*/5 * * * *"]  # Run health checks every 5 minutes
+
+# KV Namespace bindings (optional, for persistent storage)
+# [[kv_namespaces]]
+# binding = "PING_BOOSTER_KV"
+# id = "your-kv-namespace-id"
+
+# Durable Objects bindings (optional, for stateful operations)
+# [[durable_objects.bindings]]
+# name = "CONNECTION_POOL"
+# class_name = "ConnectionPool"
+# script_name = "ping-booster-worker"
+
+# R2 bucket bindings (optional, for object storage)
+# [[r2_buckets]]
+# binding = "LOGS"
+# bucket_name = "ping-booster-logs"
+
+# Analytics Engine bindings (optional, for metrics)
+# [[analytics_engine_datasets]]
+# binding = "ANALYTICS"
+
+# Build configuration
+[build]
+command = ""
+
+# Development configuration
+[env.development]
+name = "ping-booster-worker-dev"
+workers_dev = true
+
+[env.development.vars]
+ENVIRONMENT = "development"
+
+# Staging configuration
+[env.staging]
+name = "ping-booster-worker-staging"
+route = "staging.example.com/*"
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+# Production configuration
+[env.production]
+name = "ping-booster-worker"
+route = "example.com/*"
+
+[env.production.vars]
+ENVIRONMENT = "production"
